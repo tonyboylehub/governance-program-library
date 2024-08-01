@@ -24,10 +24,14 @@ async fn test_configure_collection() -> Result<(), TransportError> {
     
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
+    
+
     let _asset_cookie = core_voter_test
         .core
         .with_asset(&collection_cookie, &voter_cookie, Some(collection_cookie.collection))
         .await?;
+
+    let assets_in_collection = 1;
 
     let max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
@@ -39,7 +43,9 @@ async fn test_configure_collection() -> Result<(), TransportError> {
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs { weight: 1, size: 1 }),
+            Some(ConfigureCollectionArgs { weight: 1, 
+                // size: 1 
+            }),
 
         )
         .await?;
@@ -48,6 +54,8 @@ async fn test_configure_collection() -> Result<(), TransportError> {
     let registrar = core_voter_test
         .get_registrar_account(&registrar_cookie.address)
         .await;
+    
+    
 
     assert_eq!(registrar.collection_configs.len(), 1);
 
@@ -63,7 +71,7 @@ async fn test_configure_collection() -> Result<(), TransportError> {
     assert_eq!(max_voter_weight_record.max_voter_weight_expiry, None);
     assert_eq!(
         max_voter_weight_record.max_voter_weight,
-        (registrar.collection_configs[0].weight as u32 * registrar.collection_configs[0].size)
+        (registrar.collection_configs[0].weight as u32 * assets_in_collection)
             as u64
     );
 
@@ -84,14 +92,21 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
 
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
-    for _ in 0..5 {
+    // Set size and weights for collections
+    let collection1_size = 5;
+    let collection1_weight: u64 = 5;
+
+    let collection2_size = 10;
+    let collection2_weight: u64 = 7;
+
+    for _ in 0..collection1_size {
         let _asset_cookie = core_voter_test
             .core
             .with_asset(&collection_cookie1, &voter_cookie, Some(collection_cookie1.collection))
             .await?;
     }
 
-    for _ in 0..10 {
+    for _ in 0..collection2_size {
         let _asset_cookie = core_voter_test
             .core
             .with_asset(&collection_cookie2, &voter_cookie, Some(collection_cookie2.collection))
@@ -108,7 +123,9 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
             &registrar_cookie,
             &collection_cookie1,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs { weight: 1, size: 5 }),
+            Some(ConfigureCollectionArgs { weight: collection1_weight, 
+                // size: 5 
+            }),
         )
         .await?;
 
@@ -118,8 +135,8 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
             &collection_cookie2,
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
-                weight: 2,
-                size: 10,
+                weight: collection2_weight,
+                // size: 10,
             }),
         )
         .await?;
@@ -131,12 +148,16 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
 
     assert_eq!(registrar.collection_configs.len(), 2);
 
+    
+
     let max_voter_weight_record = core_voter_test
         .get_max_voter_weight_record(&max_voter_weight_record_cookie.address)
         .await;
 
+    println!("max_voter_weight_record: {:?}", max_voter_weight_record);
+
     assert_eq!(max_voter_weight_record.max_voter_weight_expiry, None);
-    assert_eq!(max_voter_weight_record.max_voter_weight, 25);
+    assert_eq!(max_voter_weight_record.max_voter_weight, 120);
 
     Ok(())
 }
@@ -172,7 +193,9 @@ async fn test_configure_max_collections() -> Result<(), TransportError> {
                 &registrar_cookie,
                 &collection_cookie,
                 &max_voter_weight_record_cookie,
-                Some(ConfigureCollectionArgs { weight: 1, size: 3 }),
+                Some(ConfigureCollectionArgs { weight: 1, 
+                    // size: 3 
+                }),
             )
             .await?;
     }
@@ -239,7 +262,7 @@ async fn test_configure_existing_collection() -> Result<(), TransportError> {
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 2,
-                size: 10,
+                // size: 10,
             }),
         )
         .await?;

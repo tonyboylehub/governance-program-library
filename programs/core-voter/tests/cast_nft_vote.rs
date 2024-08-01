@@ -41,7 +41,7 @@ async fn test_cast_asset_vote() -> Result<(), TransportError> {
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -136,7 +136,7 @@ async fn test_cast_asset_vote_with_multiple_nfts() -> Result<(), TransportError>
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -386,7 +386,7 @@ async fn test_cast_asset_vote_with_invalid_owner_error() -> Result<(), Transport
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -464,7 +464,7 @@ async fn test_cast_asset_vote_with_invalid_collection_error() -> Result<(), Tran
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -610,7 +610,7 @@ async fn test_cast_asset_vote_with_max_5_nfts() -> Result<(), TransportError> {
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -711,7 +711,7 @@ async fn test_cast_asset_vote_using_multiple_instructions() -> Result<(), Transp
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -813,7 +813,7 @@ async fn test_cast_asset_vote_using_multiple_instructions_with_nft_already_voted
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -900,7 +900,7 @@ async fn test_cast_asset_vote_using_multiple_instructions_with_attempted_sandwic
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;

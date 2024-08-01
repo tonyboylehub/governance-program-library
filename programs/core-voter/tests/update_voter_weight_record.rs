@@ -41,7 +41,7 @@ async fn test_update_voter_weight_record() -> Result<(), TransportError> {
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -123,7 +123,7 @@ async fn test_update_voter_weight_with_multiple_nfts() -> Result<(), TransportEr
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -195,7 +195,7 @@ async fn test_update_voter_weight_with_cast_vote_not_allowed_error() -> Result<(
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -257,7 +257,7 @@ async fn test_update_voter_weight_with_invalid_owner_error() -> Result<(), Trans
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -328,7 +328,7 @@ async fn test_update_voter_weight_with_invalid_collection_error() -> Result<(), 
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;

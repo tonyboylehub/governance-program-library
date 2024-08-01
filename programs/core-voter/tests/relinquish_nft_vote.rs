@@ -39,7 +39,9 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs { weight: 1, size: 1 }), // Set Size == 1 to complete voting with just one vote
+            Some(ConfigureCollectionArgs { weight: 1, 
+                // size: 1 
+            }), // Set Size == 1 to complete voting with just one vote
         )
         .await?;
 
@@ -339,7 +341,9 @@ async fn test_relinquish_nft_vote_with_invalid_voter_error() -> Result<(), Trans
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs { weight: 1, size: 1 }), // Set Size == 1 to complete voting with just one vote
+            Some(ConfigureCollectionArgs { weight: 1, 
+                // size: 1 
+            }), // Set Size == 1 to complete voting with just one vote
         )
         .await?;
 
@@ -429,7 +433,7 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs {
                 weight: 10,
-                size: 20,
+                // size: 20,
             }),
         )
         .await?;
@@ -610,7 +614,9 @@ async fn test_relinquish_nft_vote_using_delegate() -> Result<(), TransportError>
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs { weight: 1, size: 1 }), // Set Size == 1 to complete voting with just one vote
+            Some(ConfigureCollectionArgs { weight: 1, 
+                // size: 1 
+            }), // Set Size == 1 to complete voting with just one vote
         )
         .await?;
 

@@ -80,7 +80,6 @@ pub fn configure_collection(
         collection: collection.key(),
         weight,
         reserved: [0; 8],
-        size,
     };
 
     let collection_idx = registrar
@@ -105,7 +104,7 @@ pub fn configure_collection(
     max_voter_weight_record.max_voter_weight = registrar
         .collection_configs
         .iter()
-        .try_fold(0u64, |sum, cc| sum.checked_add(cc.get_max_weight()))
+        .try_fold(0u64, |sum, cc| sum.checked_add(cc.get_max_weight(collection.current_size)))
         .unwrap();
 
     // The weight never expires and only changes when collections are configured

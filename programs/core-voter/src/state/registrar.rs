@@ -37,7 +37,7 @@ impl Registrar {
         DISCRIMINATOR_SIZE
             + PUBKEY_BYTES * 3
             + 4
-            + max_collections as usize * (PUBKEY_BYTES + 4 + 8 + 8)
+            + max_collections as usize * (PUBKEY_BYTES + 8 + 8)
             + 128
     }
 }

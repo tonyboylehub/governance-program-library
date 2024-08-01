@@ -52,12 +52,14 @@ pub struct CollectionConfigCookie {
 
 pub struct ConfigureCollectionArgs {
     pub weight: u64,
-    pub size: u32,
+    // pub size: u32,
 }
 
 impl Default for ConfigureCollectionArgs {
     fn default() -> Self {
-        Self { weight: 1, size: 3 }
+        Self { weight: 1, 
+            // size: 3 
+        }
     }
 }
 
@@ -463,7 +465,6 @@ impl CoreVoterTest {
 
         let collection_config = CollectionConfig {
             collection: collection_cookie.collection,
-            size: args.size,
             weight: args.weight,
             reserved: [0; 8],
         };
