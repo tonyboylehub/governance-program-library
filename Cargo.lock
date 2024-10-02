@@ -1830,7 +1830,6 @@ dependencies = [
  "borsh 0.10.3",
  "itertools",
  "mpl-core",
- "mpl-token-metadata",
  "solana-program",
  "solana-program-test",
  "solana-sdk",

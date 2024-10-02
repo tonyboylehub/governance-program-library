@@ -31,8 +31,6 @@ use crate::program_test::governance_test::{ProposalCookie, RealmCookie, TokenOwn
 use crate::program_test::program_test_bench::WalletCookie;
 use crate::program_test::tools::NopOverride;
 
-use super::core_test;
-
 #[derive(Debug, PartialEq)]
 pub struct RegistrarCookie {
     pub address: Pubkey,
@@ -41,7 +39,6 @@ pub struct RegistrarCookie {
     pub realm_authority: Keypair,
     pub max_collections: u8,
 }
-
 
 pub struct VoterWeightRecordCookie {
     pub address: Pubkey,
@@ -414,7 +411,7 @@ impl CoreVoterTest {
         max_voter_weight_record_cookie: &mut MaxVoterWeightRecordCookie,
     ) -> Result<(), BanksClientError> {
         let data = anchor_lang::InstructionData::data(
-            &gpl_core_voter::instruction::UpdateMaxVoterWeightRecord {}
+            &gpl_core_voter::instruction::UpdateMaxVoterWeightRecord {},
         );
 
         let accounts = gpl_core_voter::accounts::UpdateMaxVoterWeightRecord {

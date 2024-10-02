@@ -150,12 +150,10 @@ async fn test_configure_max_collections() -> Result<(), TransportError> {
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
-    
     let _voter_cookie = core_voter_test.bench.with_wallet().await;
 
     for _ in 0..registrar_cookie.max_collections {
         let collection_cookie = core_voter_test.core.create_collection(Some(3)).await?;
-
 
         core_voter_test
             .with_collection(
@@ -199,7 +197,6 @@ async fn test_configure_existing_collection() -> Result<(), TransportError> {
     let collection_cookie = core_voter_test.core.create_collection(Some(10)).await?;
 
     let _voter_cookie = core_voter_test.bench.with_wallet().await;
-
 
     let max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)

@@ -1,6 +1,10 @@
 [workspace]
 members = [
-    "programs/*"
+    "programs/gateway",
+    "programs/realm-voter",
+    "programs/nft-voter",
+    "programs/token-haver",
+    "programs/core-voter",
 ]
 
 [profile.release]

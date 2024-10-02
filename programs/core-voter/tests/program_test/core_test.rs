@@ -76,7 +76,6 @@ impl CoreTest {
             .process_transaction(&[create_coll_ix], Some(&[&coll_keypair]))
             .await?;
 
-        println!("Minting {} assets to collection", collection_size.unwrap());
         if collection_size.is_some() {
             self.mint_assets_to_collection(
                 &CollectionCookie {

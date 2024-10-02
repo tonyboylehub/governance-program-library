@@ -26,10 +26,8 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test
@@ -37,7 +35,7 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs { weight: 1}), // Set Size == 1 to complete voting with just one vote
+            Some(ConfigureCollectionArgs { weight: 1 }), // Set Size == 1 to complete voting with just one vote
         )
         .await?;
 
@@ -120,10 +118,8 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state() -> Result<(), T
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie,
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test
@@ -225,10 +221,8 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
 
     // Create and store 6th asset. This will be used for the vote.
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test
@@ -236,8 +230,7 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            None
-            
+            None,
         )
         .await?;
 
@@ -308,10 +301,8 @@ async fn test_relinquish_nft_vote_with_invalid_voter_error() -> Result<(), Trans
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie,
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test
@@ -394,10 +385,8 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test
@@ -405,9 +394,7 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
             &registrar_cookie,
             &collection_cookie,
             &max_voter_weight_record_cookie,
-            Some(ConfigureCollectionArgs {
-                weight: 10,
-            }),
+            Some(ConfigureCollectionArgs { weight: 10 }),
         )
         .await?;
 
@@ -484,10 +471,8 @@ async fn test_relinquish_nft_vote_with_invalid_voter_weight_token_owner_error(
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test
@@ -572,10 +557,8 @@ async fn test_relinquish_nft_vote_using_delegate() -> Result<(), TransportError>
     let voter_cookie = core_voter_test.bench.with_wallet().await;
 
     let asset_cookie1 = core_voter_test
-        .core.create_asset(
-            &collection_cookie,
-            &voter_cookie
-        )
+        .core
+        .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
     core_voter_test

@@ -24,7 +24,6 @@ async fn test_create_max_voter_weight_record() -> Result<(), TransportError> {
         .await?;
 
     // Assert
-    
     let max_voter_weight_record = core_voter_test
         .get_max_voter_weight_record(&max_voter_weight_record_cookie.address)
         .await;

@@ -45,10 +45,7 @@ pub struct ConfigureCollection<'info> {
     pub max_voter_weight_record: Account<'info, MaxVoterWeightRecord>,
 }
 
-pub fn configure_collection(
-    ctx: Context<ConfigureCollection>,
-    weight: u64,
-) -> Result<()> {
+pub fn configure_collection(ctx: Context<ConfigureCollection>, weight: u64) -> Result<()> {
     let registrar = &mut ctx.accounts.registrar;
 
     let realm = realm::get_realm_data_for_governing_token_mint(
@@ -71,7 +68,7 @@ pub fn configure_collection(
     // }
 
     let collection = &ctx.accounts.collection;
-    
+
     let size = collection.current_size;
 
     msg!("Collection size: {}", size);

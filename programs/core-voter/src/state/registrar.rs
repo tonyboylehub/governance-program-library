@@ -121,15 +121,16 @@ pub fn resolve_nft_vote_weight_and_mint(
 
     // The Core NFT must have a collection and the collection must be verified
     let collection = match asset.update_authority {
-        UpdateAuthority::Collection(collection) => {
-            collection
-        },
-        _ => return Err(NftVoterError::InvalidNftCollection.into())
+        UpdateAuthority::Collection(collection) => collection,
+        _ => return Err(NftVoterError::InvalidNftCollection.into()),
     };
 
     let collection_config = registrar.get_collection_config(collection)?;
 
-    require!(collection_config.collection == collection, NftVoterError::InvalidNftCollection);
+    require!(
+        collection_config.collection == collection,
+        NftVoterError::InvalidNftCollection
+    );
 
     Ok((collection_config.weight, nft_mint))
 }

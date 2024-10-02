@@ -4,7 +4,6 @@ use gpl_core_voter::state::*;
 use program_test::core_voter_test::CoreVoterTest;
 use program_test::tools::*;
 use solana_program_test::*;
-use solana_sdk::msg;
 use solana_sdk::transport::TransportError;
 
 mod program_test;
@@ -31,7 +30,6 @@ async fn test_update_voter_weight_record() -> Result<(), TransportError> {
         .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
-    msg!("Register the collection to the registrar");
     // Register the collection to the registrar
     let _collection_config_cookie = core_voter_test
         .with_collection(
@@ -264,9 +262,9 @@ async fn test_update_voter_weight_with_invalid_collection_error() -> Result<(), 
 
     let registrar_cookie = core_voter_test.with_registrar(&realm_cookie).await?;
 
-    let collection_cookie = core_voter_test.core.create_collection(None).await?;
+    let collection_cookie = core_voter_test.core.create_collection(Some(2)).await?;
 
-    let collection_cookie2 = core_voter_test.core.create_collection(None).await?;
+    let collection_cookie2 = core_voter_test.core.create_collection(Some(2)).await?;
 
     let max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)

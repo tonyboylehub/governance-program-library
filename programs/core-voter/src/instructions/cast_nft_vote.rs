@@ -51,8 +51,8 @@ pub struct CastNftVote<'info> {
 }
 
 /// Casts vote with the NFT
-pub fn cast_nft_vote<'a, 'b, 'c, 'info>(
-    ctx: Context<'a, 'b, 'c, 'info, CastNftVote<'info>>,
+pub fn cast_nft_vote<'info>(
+    ctx: Context<'_, '_, '_, 'info, CastNftVote<'info>>,
     proposal: Pubkey,
 ) -> Result<()> {
     let registrar = &ctx.accounts.registrar;
@@ -72,18 +72,16 @@ pub fn cast_nft_vote<'a, 'b, 'c, 'info>(
 
     let rent = Rent::get()?;
 
-    for (asset, asset_vote_record_info) in
-        ctx.remaining_accounts.iter().tuples()
-    {
+    for (asset, asset_vote_record_info) in ctx.remaining_accounts.iter().tuples() {
         let (asset_vote_weight, asset_mint) = resolve_nft_vote_weight_and_mint(
             registrar,
             &governing_token_owner,
-            asset.key.clone(),
+            *asset.key,
             &BaseAssetV1::from_bytes(&asset.data.borrow()).unwrap(),
             &mut unique_asset_mints,
         )?;
 
-        voter_weight = voter_weight.checked_add(asset_vote_weight as u64).unwrap();
+        voter_weight = voter_weight.checked_add(asset_vote_weight).unwrap();
 
         // Create NFT vote record to ensure the same NFT hasn't been already used for voting
         // Note: The correct PDA of the NftVoteRecord is validated in create_and_serialize_account_signed

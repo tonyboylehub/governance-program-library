@@ -46,7 +46,10 @@ impl IsInitialized for AssetVoteRecord {
 }
 
 /// Returns AssetVoteRecord PDA seeds
-pub fn get_nft_vote_record_seeds<'a>(proposal: &'a Pubkey, asset_mint: &'a Pubkey) -> [&'a [u8]; 3] {
+pub fn get_nft_vote_record_seeds<'a>(
+    proposal: &'a Pubkey,
+    asset_mint: &'a Pubkey,
+) -> [&'a [u8]; 3] {
     [b"nft-vote-record", proposal.as_ref(), asset_mint.as_ref()]
 }
 

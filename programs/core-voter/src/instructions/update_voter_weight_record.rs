@@ -53,12 +53,12 @@ pub fn update_voter_weight_record(
         let (nft_vote_weight, _) = resolve_nft_vote_weight_and_mint(
             registrar,
             governing_token_owner,
-            asset.key.clone(),
+            *asset.key,
             &BaseAssetV1::from_bytes(&asset.data.borrow()).unwrap(),
             &mut unique_nft_mints,
         )?;
 
-        voter_weight = voter_weight.checked_add(nft_vote_weight as u64).unwrap();
+        voter_weight = voter_weight.checked_add(nft_vote_weight).unwrap();
     }
 
     let voter_weight_record = &mut ctx.accounts.voter_weight_record;
