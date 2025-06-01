@@ -15,7 +15,8 @@
         "clean": "rm -rf dist",
         "type-check": "tsc --pretty --noEmit",
         "format": "prettier --check .",
-        "lint": "eslint . --ext ts --ext tsx --ext js --quiet"
+        "lint": "eslint . --ext ts --ext tsx --ext js --quiet",
+        "test:core-voter": "cargo test-sbf -p gpl-core-voter"
     },
     "devDependencies": {
         "@tsconfig/recommended": "^1.0.1",

@@ -8,6 +8,12 @@ use spl_governance::error::GovernanceError;
 
 mod program_test;
 
+async fn advance_clock_multiple_times(core_voter_test: &mut CoreVoterTest, times: u32) {
+    for _ in 0..times {
+        core_voter_test.bench.advance_clock().await;
+    }
+}
+
 #[tokio::test]
 async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
     // Arrange
@@ -19,7 +25,7 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
 
     let collection_cookie = core_voter_test.core.create_collection(None).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -53,6 +59,11 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
         .with_proposal(&realm_cookie)
         .await?;
 
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     let asset_vote_record_cookies = core_voter_test
         .cast_asset_vote(
             &registrar_cookie,
@@ -66,7 +77,18 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
         )
         .await?;
 
-    core_voter_test.bench.advance_clock().await;
+    // Print current slot and expiry before advancing
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
+    println!("Before advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
+
+    // Advance clock more times to ensure expiry
+    advance_clock_multiple_times(&mut core_voter_test, 12).await;
+
+    // Print current slot and expiry after advancing
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
+    println!("After advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
 
     // Act
     core_voter_test
@@ -81,7 +103,6 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
         .await?;
 
     // Assert
-
     let voter_weight_record = core_voter_test
         .get_voter_weight_record(&voter_weight_record_cookie.address)
         .await;
@@ -111,7 +132,7 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state() -> Result<(), T
 
     let collection_cookie = core_voter_test.core.create_collection(None).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -145,6 +166,11 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state() -> Result<(), T
         .with_proposal(&realm_cookie)
         .await?;
 
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     let asset_vote_record_cookies = core_voter_test
         .cast_asset_vote(
             &registrar_cookie,
@@ -158,6 +184,8 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state() -> Result<(), T
         )
         .await?;
 
+    advance_clock_multiple_times(&mut core_voter_test, 6).await;
+
     // Relinquish Vote from spl-gov
     core_voter_test
         .governance
@@ -168,7 +196,7 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state() -> Result<(), T
         )
         .await?;
 
-    core_voter_test.bench.advance_clock().await;
+    advance_clock_multiple_times(&mut core_voter_test, 6).await;
 
     // Act
     core_voter_test
@@ -202,8 +230,7 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state() -> Result<(), T
 }
 
 #[tokio::test]
-async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_exists_error(
-) -> Result<(), TransportError> {
+async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_exists_error() -> Result<(), TransportError> {
     // Arrange
     let mut core_voter_test = CoreVoterTest::start_new().await;
 
@@ -213,7 +240,7 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
 
     let collection_cookie = core_voter_test.core.create_collection(Some(5)).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -248,6 +275,11 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
         .with_proposal(&realm_cookie)
         .await?;
 
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     let asset_vote_record_cookies = core_voter_test
         .cast_asset_vote(
             &registrar_cookie,
@@ -260,6 +292,8 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
             None,
         )
         .await?;
+
+    advance_clock_multiple_times(&mut core_voter_test, 6).await;
 
     // Act
     let err = core_voter_test
@@ -294,7 +328,7 @@ async fn test_relinquish_nft_vote_with_invalid_voter_error() -> Result<(), Trans
 
     let collection_cookie = core_voter_test.core.create_collection(None).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -326,6 +360,11 @@ async fn test_relinquish_nft_vote_with_invalid_voter_error() -> Result<(), Trans
     let proposal_cookie = core_voter_test
         .governance
         .with_proposal(&realm_cookie)
+        .await?;
+
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
         .await?;
 
     let asset_vote_record_cookies = core_voter_test
@@ -378,7 +417,7 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
 
     let collection_cookie = core_voter_test.core.create_collection(None).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -412,6 +451,11 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
         .with_proposal(&realm_cookie)
         .await?;
 
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     let args = CastAssetVoteArgs {
         cast_spl_gov_vote: false,
     };
@@ -430,8 +474,20 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
         )
         .await?;
 
-    // Act
+    // Print current slot and expiry before advancing
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
+    println!("Before advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
 
+    // Advance clock only once so the record is NOT expired
+    // advance_clock_multiple_times(&mut core_voter_test, 1).await;
+
+    // Print current slot and expiry after advancing
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
+    println!("After advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
+
+    // Act
     let err = core_voter_test
         .relinquish_nft_vote(
             &registrar_cookie,
@@ -446,15 +502,13 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
         .unwrap();
 
     // Assert
-
     assert_nft_voter_err(err, NftVoterError::VoterWeightRecordMustBeExpired);
 
     Ok(())
 }
 
 #[tokio::test]
-async fn test_relinquish_nft_vote_with_invalid_voter_weight_token_owner_error(
-) -> Result<(), TransportError> {
+async fn test_relinquish_nft_vote_with_invalid_voter_weight_token_owner_error() -> Result<(), TransportError> {
     // Arrange
     let mut core_voter_test = CoreVoterTest::start_new().await;
 
@@ -464,7 +518,7 @@ async fn test_relinquish_nft_vote_with_invalid_voter_weight_token_owner_error(
 
     let collection_cookie = core_voter_test.core.create_collection(None).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -496,6 +550,11 @@ async fn test_relinquish_nft_vote_with_invalid_voter_weight_token_owner_error(
     let proposal_cookie = core_voter_test
         .governance
         .with_proposal(&realm_cookie)
+        .await?;
+
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
         .await?;
 
     let asset_vote_record_cookies = core_voter_test
@@ -550,7 +609,7 @@ async fn test_relinquish_nft_vote_using_delegate() -> Result<(), TransportError>
 
     let collection_cookie = core_voter_test.core.create_collection(None).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -584,6 +643,11 @@ async fn test_relinquish_nft_vote_using_delegate() -> Result<(), TransportError>
         .with_proposal(&realm_cookie)
         .await?;
 
+    // Update max voter weight record before casting vote
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     let asset_vote_record_cookies = core_voter_test
         .cast_asset_vote(
             &registrar_cookie,
@@ -597,7 +661,7 @@ async fn test_relinquish_nft_vote_using_delegate() -> Result<(), TransportError>
         )
         .await?;
 
-    core_voter_test.bench.advance_clock().await;
+    advance_clock_multiple_times(&mut core_voter_test, 6).await;
 
     // Setup delegate
     let delegate_cookie = core_voter_test.bench.with_wallet().await;

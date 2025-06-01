@@ -95,20 +95,12 @@ pub fn configure_collection(ctx: Context<ConfigureCollection>, weight: u64) -> R
         registrar.collection_configs.push(collection_config);
     }
 
-    // TODO: if weight == 0 then remove the collection from config
-    // Currently if weight is set to 0 then the collection won't be removed but it won't have any governance power
-
     // Update MaxVoterWeightRecord based on max voting power of the collections
     let max_voter_weight_record = &mut ctx.accounts.max_voter_weight_record;
 
-    max_voter_weight_record.max_voter_weight = registrar
-        .collection_configs
-        .iter()
-        .try_fold(0u64, |sum, cc| sum.checked_add(cc.get_max_weight()))
-        .unwrap();
-
-    // The weight never expires and only changes when collections are configured
-    max_voter_weight_record.max_voter_weight_expiry = None;
+    // Reset both fields as per GitHub comment
+    max_voter_weight_record.max_voter_weight = 0;
+    max_voter_weight_record.max_voter_weight_expiry = Some(0);
 
     Ok(())
 }

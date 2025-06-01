@@ -29,7 +29,7 @@ async fn test_configure_collection() -> Result<(), TransportError> {
         .create_asset(&collection_cookie, &voter_cookie)
         .await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -41,6 +41,11 @@ async fn test_configure_collection() -> Result<(), TransportError> {
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs { weight: 1 }),
         )
+        .await?;
+
+    // Update max voter weight record
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
         .await?;
 
     // Assert
@@ -59,7 +64,8 @@ async fn test_configure_collection() -> Result<(), TransportError> {
         .get_max_voter_weight_record(&max_voter_weight_record_cookie.address)
         .await;
 
-    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, None);
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, Some(current_slot));
     assert_eq!(
         max_voter_weight_record.max_voter_weight,
         (registrar.collection_configs[0].weight as u32 * registrar.collection_configs[0].size)
@@ -97,7 +103,7 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
             .await?;
     }
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -120,6 +126,11 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
         )
         .await?;
 
+    // Update max voter weight record
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     // Assert
     let registrar = core_voter_test
         .get_registrar_account(&registrar_cookie.address)
@@ -131,7 +142,8 @@ async fn test_configure_multiple_collections() -> Result<(), TransportError> {
         .get_max_voter_weight_record(&max_voter_weight_record_cookie.address)
         .await;
 
-    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, None);
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, Some(current_slot));
     assert_eq!(max_voter_weight_record.max_voter_weight, 25);
 
     Ok(())
@@ -146,7 +158,7 @@ async fn test_configure_max_collections() -> Result<(), TransportError> {
 
     let registrar_cookie = core_voter_test.with_registrar(&realm_cookie).await?;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -165,6 +177,11 @@ async fn test_configure_max_collections() -> Result<(), TransportError> {
             .await?;
     }
 
+    // Update max voter weight record
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
+
     // Assert
     let registrar = core_voter_test
         .get_registrar_account(&registrar_cookie.address)
@@ -179,7 +196,8 @@ async fn test_configure_max_collections() -> Result<(), TransportError> {
         .get_max_voter_weight_record(&max_voter_weight_record_cookie.address)
         .await;
 
-    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, None);
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, Some(current_slot));
     assert_eq!(max_voter_weight_record.max_voter_weight, 30);
 
     Ok(())
@@ -198,7 +216,7 @@ async fn test_configure_existing_collection() -> Result<(), TransportError> {
 
     let _voter_cookie = core_voter_test.bench.with_wallet().await;
 
-    let max_voter_weight_record_cookie = core_voter_test
+    let mut max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
 
@@ -211,8 +229,12 @@ async fn test_configure_existing_collection() -> Result<(), TransportError> {
         )
         .await?;
 
-    // Act
+    // Update max voter weight record
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
+        .await?;
 
+    // Act
     core_voter_test
         .with_collection(
             &registrar_cookie,
@@ -220,6 +242,14 @@ async fn test_configure_existing_collection() -> Result<(), TransportError> {
             &max_voter_weight_record_cookie,
             Some(ConfigureCollectionArgs { weight: 2 }),
         )
+        .await?;
+
+    // Advance the clock to ensure slot increments
+    core_voter_test.bench.advance_clock().await;
+
+    // Update max voter weight record again
+    core_voter_test
+        .update_max_voter_weight_record(&registrar_cookie, &mut max_voter_weight_record_cookie)
         .await?;
 
     // Assert
@@ -233,7 +263,8 @@ async fn test_configure_existing_collection() -> Result<(), TransportError> {
         .get_max_voter_weight_record(&max_voter_weight_record_cookie.address)
         .await;
 
-    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, None);
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    assert_eq!(max_voter_weight_record.max_voter_weight_expiry, Some(current_slot));
     assert_eq!(max_voter_weight_record.max_voter_weight, 20);
 
     Ok(())
