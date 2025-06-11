@@ -93,8 +93,6 @@ pub fn relinquish_nft_vote(ctx: Context<RelinquishNftVote>) -> Result<()> {
     //
     // If the Proposal is in any other state then we can dispose NftVoteRecords without any additional Proposal checks
 
-    msg!("Proposal State: {:?}", proposal.state);
-
     if proposal.state == ProposalState::Voting {
         let vote_record_info = &ctx.accounts.vote_record.to_account_info();
 

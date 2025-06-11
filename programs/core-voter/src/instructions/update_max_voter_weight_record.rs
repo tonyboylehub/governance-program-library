@@ -34,7 +34,6 @@ pub fn update_max_voter_weight_record(ctx: Context<UpdateMaxVoterWeightRecord>) 
 
     // Record is only valid as of the current slot
     let clock = Clock::get()?.slot;
-    msg!("Clock: {:?}", clock);
 
     ctx.accounts.max_voter_weight_record.max_voter_weight_expiry = Some(Clock::get()?.slot);
 

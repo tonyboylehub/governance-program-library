@@ -77,18 +77,8 @@ async fn test_relinquish_nft_vote() -> Result<(), TransportError> {
         )
         .await?;
 
-    // Print current slot and expiry before advancing
-    let current_slot = core_voter_test.bench.get_clock().await.slot;
-    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
-    println!("Before advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
-
     // Advance clock more times to ensure expiry
     advance_clock_multiple_times(&mut core_voter_test, 12).await;
-
-    // Print current slot and expiry after advancing
-    let current_slot = core_voter_test.bench.get_clock().await.slot;
-    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
-    println!("After advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
 
     // Act
     core_voter_test
@@ -309,8 +299,6 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
         .err()
         .unwrap();
 
-    println!("{:?}", err);
-
     // Assert
     assert_nft_voter_err(err, NftVoterError::VoteRecordMustBeWithdrawn);
 
@@ -473,19 +461,6 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
             Some(args),
         )
         .await?;
-
-    // Print current slot and expiry before advancing
-    let current_slot = core_voter_test.bench.get_clock().await.slot;
-    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
-    println!("Before advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
-
-    // Advance clock only once so the record is NOT expired
-    // advance_clock_multiple_times(&mut core_voter_test, 1).await;
-
-    // Print current slot and expiry after advancing
-    let current_slot = core_voter_test.bench.get_clock().await.slot;
-    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
-    println!("After advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
 
     // Act
     let err = core_voter_test

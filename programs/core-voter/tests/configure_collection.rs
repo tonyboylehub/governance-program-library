@@ -374,13 +374,6 @@ async fn test_configure_collection_with_invalid_realm_authority_error() -> Resul
 
     let collection_cookie = core_voter_test.core.create_collection(Some(1)).await?;
 
-    // let voter_cookie = core_voter_test.bench.with_wallet().await;
-
-    // let _asset_cookie = core_voter_test
-    //     .core
-    //     .create_asset(&collection_cookie, &voter_cookie)
-    //     .await?;
-
     let max_voter_weight_record_cookie = core_voter_test
         .with_max_voter_weight_record(&registrar_cookie)
         .await?;
@@ -419,13 +412,6 @@ async fn test_configure_collection_with_invalid_max_voter_weight_realm_error(
 
     let collection_cookie = core_voter_test.core.create_collection(Some(1)).await?;
 
-    // let voter_cookie = core_voter_test.bench.with_wallet().await;
-
-    // let _asset_cookie = core_voter_test
-    //     .core
-    //     .create_asset(&collection_cookie, &voter_cookie)
-    //     .await?;
-
     let realm_cookie2 = core_voter_test.governance.with_realm().await?;
     let registrar_cookie2 = core_voter_test.with_registrar(&realm_cookie2).await?;
 
@@ -462,13 +448,6 @@ async fn test_configure_collection_with_invalid_max_voter_weight_mint_error(
     let registrar_cookie = core_voter_test.with_registrar(&realm_cookie).await?;
 
     let collection_cookie = core_voter_test.core.create_collection(Some(1)).await?;
-
-    // let voter_cookie = core_voter_test.bench.with_wallet().await;
-
-    // let _asset_cookie = core_voter_test
-    //     .core
-    //     .create_asset(&collection_cookie, &voter_cookie)
-    //     .await?;
 
     // Create Registrar for council mint
     realm_cookie.account.community_mint = realm_cookie.account.config.council_mint.unwrap();
