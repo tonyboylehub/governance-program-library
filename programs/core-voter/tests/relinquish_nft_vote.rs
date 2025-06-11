@@ -309,8 +309,6 @@ async fn test_relinquish_nft_vote_for_proposal_in_voting_state_and_vote_record_e
         .err()
         .unwrap();
 
-    println!("{:?}", err);
-
     // Assert
     assert_nft_voter_err(err, NftVoterError::VoteRecordMustBeWithdrawn);
 
