@@ -462,6 +462,19 @@ async fn test_relinquish_nft_vote_with_unexpired_vote_weight_record() -> Result<
         )
         .await?;
 
+    // Print current slot and expiry before advancing
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
+    println!("Before advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
+
+    // Advance clock only once so the record is NOT expired
+    // advance_clock_multiple_times(&mut core_voter_test, 1).await;
+
+    // Print current slot and expiry after advancing
+    let current_slot = core_voter_test.bench.get_clock().await.slot;
+    let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
+    println!("After advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
+
     // Act
     let err = core_voter_test
         .relinquish_nft_vote(
@@ -651,21 +664,18 @@ async fn test_relinquish_nft_vote_using_delegate() -> Result<(), TransportError>
         .await;
 
     // Print current slot and expiry before advancing
-    // {
+    //
     //     let current_slot = core_voter_test.bench.get_clock().await.slot;
     //     let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
     //     println!("Before advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
-    // }
 
     // Advance clock only once so the record is NOT expired
     // advance_clock_multiple_times(&mut core_voter_test, 1).await;
 
     // Print current slot and expiry after advancing
-    // {
     //     let current_slot = core_voter_test.bench.get_clock().await.slot;
     //     let voter_weight_record = core_voter_test.get_voter_weight_record(&voter_weight_record_cookie.address).await;
     //     println!("After advancing: current_slot = {}, expiry = {:?}", current_slot, voter_weight_record.voter_weight_expiry);
-    // }
 
     // Act
 
